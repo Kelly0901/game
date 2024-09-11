@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<!-- saved from url=(0095)file:///C:/Users/85298/OneDrive%20-%20Heung%20To%20Middle%20School/%E6%96%87%E4%BB%B6/game.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmetic Personality Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to the Cosmetic Personality Game!</h1>
+    <p id="story">
+        Join Lily and her friends in creating a beautiful, sustainable look for a charity event. 
+        Discover which cosmetic matches your personality through a series of choices.
+    </p>
+    <button id="startButton">Start</button>
+
+    <div id="quiz" class="hidden">
+        <h2 id="question"></h2>
+        <button id="optionA" onclick="selectOption(&#39;A&#39;)"></button>
+        <button id="optionB" onclick="selectOption(&#39;B&#39;)"></button>
+    </div>
+
+    <div id="result" class="hidden">
+        <h2>Your Matching Cosmetic:</h2>
+        <p id="resultMessage"></p>
+        <button onclick="restartGame()">Play Again</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "How do you think Lily's friends would approach the challenge?",
+                options: {
+                    A: "Natural beauty that highlights individuality.",
+                    B: "Bold colors reflect lively spirits."
+                }
+            },
+            {
+                question: "What would Lily do to boost her friends' confidence?",
+                options: {
+                    A: "Brightens smiles and captures attention.",
+                    B: "Enhances radiance and inner glow."
+                }
+            },
+            {
+                question: "How would Lily ensure every detail aligns with the mission?",
+                options: {
+                    A: "Gentle yet impactful, environmentally conscious approach.",
+                    B: "Thoughtful design with minimal waste."
+                }
+            },
+            {
+                question: "What unique techniques would create a show-stopping look?",
+                options: {
+                    A: "Harmonious blending creates artistic expression.",
+                    B: "Bold combinations for an imaginative look."
+                }
+            },
+            {
+                question: "How would Lily encourage positivity on social media?",
+                options: {
+                    A: "Share joyful moments and vibrant energy.",
+                    B: "Spirit and enthusiasm inviting everyone to join."
+                }
+            },
+            {
+                question: "How would Lily's friends create a cohesive appearance?",
+                options: {
+                    A: "Unified appearance symbolizing shared commitment.",
+                    B: "Diverse elements showcasing teamwork and connection."
+                }
+            }
+        ];
+
+        let currentQuestion = 0;
+        const playerChoices = [];
+
+        document.getElementById("startButton").onclick = startGame;
+
+        function startGame() {
+            document.getElementById("story").classList.add("hidden");
+            document.getElementById("startButton").classList.add("hidden");
+            document.getElementById("quiz").classList.remove("hidden");
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById("question").innerText = question.question;
+            document.getElementById("optionA").innerText = question.options.A;
+            document.getElementById("optionB").innerText = question.options.B;
+        }
+
+        function selectOption(choice) {
+            playerChoices.push(choice);
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                displayQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById("quiz").classList.add("hidden");
+            document.getElementById("result").classList.remove("hidden");
+            determineCosmetic();
+        }
+
+        function determineCosmetic() {
+            // Basic logic to determine result based on choices:
+            let scoreA = playerChoices.filter(choice => choice === 'A').length;
+
+            let message;
+            if (scoreA >= 4) {
+                message = "You match with a Natural Glow Foundation!";
+            } else if (scoreA >= 2) {
+                message = "You match with a Vibrant Color Lipstick!";
+            } else {
+                message = "You match with a Creative Eyeshadow Palette!";
+            }
+
+            document.getElementById("resultMessage").innerText = message;
+        }
+
+        function restartGame() {
+            currentQuestion = 0;
+            playerChoices.length = 0;
+            document.getElementById("result").classList.add("hidden");
+            document.getElementById("startButton").classList.remove("hidden");
+            document.getElementById("story").classList.remove("hidden");
+        }
+    </script>
+
+
+</body></html>
