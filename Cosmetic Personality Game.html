@@ -3,195 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skincare Product Personality Game</title>
+    <title>Skincare Product Match Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f5f5f5;
+            background-color: #f7f7f7;
             margin: 0;
             padding: 20px;
+            text-align: center;
         }
-        .hidden {
-            display: none;
-        }
-        button {
-            margin: 10px;
+        .button {
+            display: inline-block;
             padding: 10px 20px;
-            font-size: 16px;
+            margin: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .question {
+            margin: 20px 0;
+        }
+        #result {
+            display: none;
+            font-weight: bold;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-
-    <h1>Welcome to the Skincare Personality Game!</h1>
-    <p id="story">
-        Discover which skincare product best matches your personality 
-        through a series of choices. Let's find out if you're a Cleanser, Toner, Moisturizer, Eye Cream, Exfoliant, or Mask!
-    </p>
-    <button id="startButton">Start</button>
-
-    <div id="quiz" class="hidden">
-        <h2 id="question"></h2>
-        <button id="optionA" onclick="selectOption('A')"></button>
-        <button id="optionB" onclick="selectOption('B')"></button>
+    <h1>Skincare Personality Game</h1>
+    <div id="intro">
+        <p>Welcome to the Skincare Personality Match Game!</p>
+        <p>In a world where self-care is the new luxury, you find yourself at a crossroads with your skincare routine. Each choice you make will lead you down a path of discovery, revealing which skincare product suits your personality best. Are you ready to explore your skincare soul?</p>
+        <button class="button" id="startButton">Start</button>
     </div>
-
-    <div id="result" class="hidden">
-        <h2>Your Matching Skincare Product:</h2>
-        <p id="resultMessage"></p>
-        <button onclick="restartGame()">Play Again</button>
-    </div>
+    
+    <div id="quiz" style="display: none;"></div>
+    <div id="result"></div>
 
     <script>
         const questions = [
             {
-                question: "How do you prefer to start your skincare routine?",
-                options: {
-                    A: "I love refreshing my face with a clean slate.",
-                    B: "I enjoy a gentle prep that balances my skin."
-                }
+                question: "What do you value the most in your daily skincare routine?",
+                options: [
+                    "A) A fresh start with effective cleansing.",
+                    "B) A soothing finish with hydration and nourishment."
+                ]
             },
             {
-                question: "What's your go-to when your skin feels dry?",
-                options: {
-                    A: "I reach for creamy hydration to lock in moisture.",
-                    B: "I apply a soothing treatment to rejuvenate my eyes."
-                }
+                question: "How do you feel about trying new skincare products?",
+                options: [
+                    "A) I love exploring new cleansers to find the perfect one!",
+                    "B) I prefer to stick with what I know works for my skin."
+                ]
             },
             {
-                question: "How do you maintain your skin's youth?",
-                options: {
-                    A: "I exfoliate regularly for a fresh start.",
-                    B: "I unwind with a pampering mask to restore glow."
-                }
+                question: "When you think of pampering yourself, what comes to mind?",
+                options: [
+                    "A) A refreshing cleanse after a long day.",
+                    "B) A hydrating mask that makes my skin glow."
+                ]
             },
             {
-                question: "What is essential in your skincare arsenal?",
-                options: {
-                    A: "A gentle cleanser to remove impurities.",
-                    B: "A toner for that refreshing finish."
-                }
+                question: "What is your go-to activity for relaxation?",
+                options: [
+                    "A) A revitalizing facial wash followed by a refreshing toner.",
+                    "B) A cozy evening with a rich moisturizer and a good book."
+                ]
             },
             {
-                question: "How do you feel about trying new techniques?",
-                options: {
-                    A: "I'm all about experimenting with exfoliants.",
-                    B: "I love to indulge in hydrating masks."
-                }
+                question: "If your skin could talk, what would it ask for?",
+                options: [
+                    "A) Please help me feel free from impurities!",
+                    "B) I crave moisture and care after a long day."
+                ]
             },
             {
-                question: "What fragrance do you prefer in skincare?",
-                options: {
-                    A: "Fresh and clean scents are my favorite.",
-                    B: "Light floral tones that soothe the senses."
-                }
+                question: "Which skincare mantra resonates with you?",
+                options: [
+                    "A) Cleanse and clear for a fresh start.",
+                    "B) Hydrate and nourish for lasting beauty."
+                ]
+            },
+            {
+                question: "What type of weather influences your skincare routine the most?",
+                options: [
+                    "A) I adjust my routine according to humidity and pollution.",
+                    "B) My skin needs more care during dry and cold weather."
+                ]
+            },
+            {
+                question: "How would you describe your skin type?",
+                options: [
+                    "A) Oily and prone to breakouts requiring frequent cleansing.",
+                    "B) Dry and sensitive, needing gentle hydration."
+                ]
+            },
+            {
+                question: "What does your ideal skincare routine look like?",
+                options: [
+                    "A) A thorough cleanse followed by a light serum.",
+                    "B) A rich cream or mask that leaves my skin feeling soft."
+                ]
+            },
+            // New question added here
+            {
+                question: "How much time do you typically spend on your skincare routine?",
+                options: [
+                    "A) I prefer a quick routine, 5-10 minutes is perfect!",
+                    "B) I enjoy taking my time, spending 20-30 minutes or more."
+                ]
             }
         ];
 
+        let score = {Cleanser: 0, Moisturizer: 0, Mask: 0};
         let currentQuestion = 0;
-        const playerChoices = [];
 
-        document.getElementById("startButton").onclick = startGame;
+        document.getElementById('startButton').onclick = function() {
+            document.getElementById('intro').style.display = 'none';
+            displayQuestion();
+        };
 
-        function startGame() {
-            document.getElementById("story").classList.add("hidden");
-            document.getElementById("startButton").classList.add("hidden");
-            document.getElementById("quiz").classList.remove("hidden");
+        function displayQuestion() {
+            const quizContainer = document.getElementById('quiz');
+            quizContainer.innerHTML = ''; // Clear previous question
+            if (currentQuestion < questions.length) {
+                const question = questions[currentQuestion];
+                const questionElement = document.createElement('div');
+                questionElement.className = 'question';
+                questionElement.innerHTML = `<p>${currentQuestion + 1}. ${question.question}</p>`;
+                
+                question.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.className = 'button';
+                    button.innerHTML = option;
+                    button.onclick = () => handleAnswer(option[0]);
+                    questionElement.appendChild(button);
+                });
+                quizContainer.appendChild(questionElement);
+            } else {
+                displayResult();
+            }
+            quizContainer.style.display = 'block'; // Show the quiz
+        }
+
+        function handleAnswer(option) {
+            if (option === 'A') {
+                score.Cleanser++;
+            } else if (option === 'B') {
+                score.Moisturizer++;
+            }
+            currentQuestion++;
             displayQuestion();
         }
 
-        function displayQuestion() {
-            const question = questions[currentQuestion];
-            document.getElementById("question").innerText = question.question;
-            document.getElementById("optionA").innerText = question.options.A;
-            document.getElementById("optionB").innerText = question.options.B;
-        }
+        function displayResult() {
+            const resultContainer = document.getElementById('result');
+            let result;
 
-        function selectOption(choice) {
-            playerChoices.push(choice);
-            currentQuestion++;
-            if (currentQuestion < questions.length) {
-                displayQuestion();
+            // Determining which product matches based on score
+            if (score.Cleanser > score.Moisturizer && score.Cleanser > score.Mask) {
+                result = "You resonate with the Cleanser personality! You value clarity and a fresh start.";
+            } else if (score.Moisturizer > score.Cleanser && score.Moisturizer > score.Mask) {
+                result = "You match the Moisturizer personality! You prioritize comfort and nourishment.";
             } else {
-                showResult();
-            }
-        }
-
-        function showResult() {
-            document.getElementById("quiz").classList.add("hidden");
-            document.getElementById("result").classList.remove("hidden");
-            determineSkincareProduct();
-        }
-
-        function determineSkincareProduct() {
-            let score = {
-                Cleanser: 0,
-                Toner: 0,
-                Moisturizer: 0,
-                EyeCream: 0,
-                Exfoliant: 0,
-                Mask: 0
-            };
-
-            playerChoices.forEach(choice => {
-                if (choice === 'A') {
-                    score.Cleanser++;
-                    score.Exfoliant++;
-                } else {
-                    score.Toner++;
-                    score.EyeCream++;
-                    score.Moisturizer++;
-                    score.Mask++;
-                }
-            });
-
-            let maxScore = Math.max(...Object.values(score));
-            let resultProduct;
-
-            // Determine which product has the highest score
-            for (const product in score) {
-                if (score[product] === maxScore) {
-                    resultProduct = product;
-                    break;
-                }
+                result = "You align with the Mask personality! You enjoy indulgent treatments that rejuvenate your skin.";
             }
 
-            // Return the matching product in a friendly message
-            let message;
-            switch (resultProduct) {
-                case "Cleanser":
-                    message = "You match with a Refreshing Cleanser!";
-                    break;
-                case "Toner":
-                    message = "You match with a Balancing Toner!";
-                    break;
-                case "Moisturizer":
-                    message = "You match with a Hydrating Moisturizer!";
-                    break;
-                case "EyeCream":
-                    message = "You match with an Soothing Eye Cream!";
-                    break;
-                case "Exfoliant":
-                    message = "You match with an Exfoliating Scrub!";
-                    break;
-                case "Mask":
-                    message = "You match with a Pampering Mask!";
-                    break;
-            }
-
-            document.getElementById("resultMessage").innerText = message;
-        }
-
-        function restartGame() {
-            currentQuestion = 0;
-            playerChoices.length = 0;
-            document.getElementById("result").classList.add("hidden");
-            document.getElementById("startButton").classList.remove("hidden");
-            document.getElementById("story").classList.remove("hidden");
+            resultContainer.innerHTML = result;
+            resultContainer.style.display = 'block';
+            document.getElementById('quiz').style.display = 'none'; // Hide quiz
         }
     </script>
-
 </body>
 </html>
